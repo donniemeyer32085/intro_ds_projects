@@ -2,7 +2,7 @@
 
 This repository consists of projects required for the Introduction to Data Science course through Springboard.
 
-Sections:
+Project Sections:
 
 1.) Programming in R
 2.) Data Wrangling
