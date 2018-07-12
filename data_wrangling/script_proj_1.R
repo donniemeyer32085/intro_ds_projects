@@ -83,6 +83,9 @@ rm(street)
 View(df)
 
 
+## Export csv file ##
+write.csv(df, "refine_clean.csv")
+
 
 
 
