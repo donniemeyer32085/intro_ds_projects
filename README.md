@@ -1,4 +1,4 @@
-# springboard_course_work
+# Springboard_Projects
 
 This repository consists of projects required for the Introduction to Data Science course through Springboard.
 
