@@ -60,7 +60,7 @@ any(is.na(df$cabin))
 sum(is.na(df$cabin))
 summary(df$cabin)
 
-df$has_cabin_number <- ifelse(is.na(df$cabin), 1, 0)
+df$has_cabin_number <- ifelse(is.na(df$cabin), 0, 1)
 
 
 View(df)
