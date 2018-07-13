@@ -33,15 +33,37 @@ df$embarked <- replace_na(df$embarked, replace = "S")
 
 ##  2: Age ##
 any(is.na(df$age))
-na_count <- sum(is.na(df$age))
+sum(is.na(df$age))
 summary(df$age)
 
 mean(df$age, na.rm = TRUE)
 df$age <- replace_na(df$age, replace = "29.88113")
+sum(df$age == 29.88113)
 
-replace_na_count <- sum(df$age == 29.88113)
 
-identical(na_count, replace_na_count)
-class(df$age)
-as.integer(max(df$age))
-#could have used the median to populate missing NA's
+#could have used the median to populate missing NA's to avoid outliers having to great an effetc on the mean
+#median less sensitive to outliers
+
+df$age <- as.numeric(df$age)
+
+
+## 3: Lifeboat ##
+any(is.na(df$boat))
+sum(is.na(df$boat))
+summary(df$boat)
+
+df$boat <- replace_na(df$boat, replace = "None")
+
+
+## 4: Cabin ##
+any(is.na(df$cabin))
+sum(is.na(df$cabin))
+summary(df$cabin)
+
+df$has_cabin_number <- ifelse(is.na(df$cabin), 1, 0)
+
+
+View(df)
+
+## clean csv file ##
+write.csv(df, "titanic_clean.csv")
