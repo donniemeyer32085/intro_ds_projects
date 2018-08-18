@@ -5,7 +5,7 @@
 library(tidyverse)
 
 ## Read in Data ##
-df <- read_csv("/home/donniemeyer32085/git/springboard_projects/data_wrangling/refine_original.csv")
+df <- read_csv("/home/donniemeyer32085/git/springboard_projects/data_wrangling/project_1/refine_original.csv")
 View(df)
 glimpse(df)
 

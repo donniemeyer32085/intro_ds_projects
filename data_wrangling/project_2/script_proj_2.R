@@ -63,7 +63,26 @@ summary(df$cabin)
 df$has_cabin_number <- ifelse(is.na(df$cabin), 0, 1)
 
 
+## Extra Cleaning ##
+number <- as.numeric(str_extract(df$ticket, "[0-9]+"))
+any(is.character(number))
+letters <- (str_extract(df$ticket, "[aA-zZ]+"))
+any(is.numeric(number))
+table(letters)
+class(letters)
+hist(table(letters))
+
+df$ticket <- number
+any(is.character(df$ticket))
+
 View(df)
 
 ## clean csv file ##
 write.csv(df, "titanic_clean.csv")
+
+
+
+
+
+
+
