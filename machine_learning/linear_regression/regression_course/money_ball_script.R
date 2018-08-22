@@ -1,7 +1,7 @@
 library(tidyverse)
 setwd("/home/donniemeyer32085/git/springboard_projects/machine_learning/")
 
-#Moneyball: The power of sports analytics
+#Moneyball: The power of sports analytic
 mb <- read_csv("moneyball.csv")
 glimpse(mb)
 mb$Team <- factor(mb$Team) 
