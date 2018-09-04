@@ -218,10 +218,11 @@ subset$region <- factor(subset$region)
 
 
 #log log model from part 
-mod_log_int <- lm(data=subset, log(energy) ~ log(toxic) + log(green)*log(toxic))
+mod_log_int <- lm(data=subset, log(energy) ~ log(toxic) + log(green) + log(green)*log(toxic))
 summary(mod_log_int)
 plot(mod_log_int)
 hist(mod_log_int$residuals)
+#inteaction term is not significant
 
 
 
@@ -237,11 +238,11 @@ subset %>%
   geom_boxplot()
 
 # model with region variable
-mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + log(green)*log(toxic) + region)
+mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + log(green) + region)
 summary(mod_sub_region)
 
 #model with different coding scheme
-mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + C(region, contr.helmert) + log(green)*log(toxic))
+mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + C(region, contr.helmert) + log(green))
 summary(mod_sub_region)
 # model with different coding scheme - when the coding scheme is changed to contr.helmert, 
 # the region variable becomes highly significant.
