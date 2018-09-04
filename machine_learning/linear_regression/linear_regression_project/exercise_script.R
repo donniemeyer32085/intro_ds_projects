@@ -144,24 +144,24 @@ cor(sd_numeric_energy)
 
 ## 1.   repeat steps 1-3. Is this model significantly better than the model
 ##   with /metro/ as the only predictor?
-states.data %>% 
+not_outliers%>% 
   ggplot(aes(x = toxic, y = energy)) +
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() + scale_y_log10()
 
-states.data %>% 
+not_outliers %>% 
   ggplot(aes(x = green, y = energy)) +
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() + scale_y_log10()
 
-states.data %>% 
+not_outliers %>% 
   ggplot(aes(x = house, y = energy)) +
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) 
 
-states.data %>% 
+not_outliers %>% 
   ggplot(aes(x = senate, y = energy)) +
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) 
@@ -214,11 +214,11 @@ hist(mod_log$residuals)
 ##      generating an interaction term and testing the interaction.
 
 # convert region to a factor variable
-not_outliers$region <- factor(not_outliers$region)
+subset$region <- factor(subset$region)
 
 
 #log log model from part 
-mod_log_int <- lm(data=not_outliers, log(energy) ~ log(toxic) + log(green)*region)
+mod_log_int <- lm(data=subset, log(energy) ~ log(toxic) + log(green)*log(toxic))
 summary(mod_log_int)
 plot(mod_log_int)
 hist(mod_log_int$residuals)
@@ -229,19 +229,19 @@ hist(mod_log_int$residuals)
 ##      across the four regions?
 
 # plots -  there appears to be variation accros regions
-not_outliers %>% 
+subset %>% 
 ggplot(aes(region, energy, fill = region)) +
   geom_col()
-not_outliers %>% 
+subset %>% 
   ggplot(aes(region, energy, color = region)) +
   geom_boxplot()
 
 # model with region variable
-mod_sub_region <- lm(data=subset, energy ~ region)
+mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + log(green)*log(toxic) + region)
 summary(mod_sub_region)
 
 #model with different coding scheme
-mod_sub_region <- lm(data=subset, energy ~ C(region, contr.helmert))
+mod_sub_region <- lm(data=subset, log(energy) ~ log(toxic) + C(region, contr.helmert) + log(green)*log(toxic))
 summary(mod_sub_region)
 # model with different coding scheme - when the coding scheme is changed to contr.helmert, 
 # the region variable becomes highly significant.
