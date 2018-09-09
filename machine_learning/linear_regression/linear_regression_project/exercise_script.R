@@ -249,7 +249,8 @@ summary(mod_sub_region)
 
 
 
-
+mod_sub_region_2 <- lm(data=subset, log(energy) ~ log(toxic) + log(green) + metro + metro2)
+summary(mod_sub_region_2)
 
 
 
