@@ -1,2 +1,0 @@
-
-### Logit Project ###
