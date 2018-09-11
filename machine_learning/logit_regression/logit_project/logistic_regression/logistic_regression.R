@@ -1,4 +1,8 @@
 library(tidyverse)
+library(broom)
+library(ROCR)
+library(caTools)
+library(mice)
 setwd("/home/donniemeyer32085/git/springboard_projects/machine_learning/logit_regression/logit_project/logistic_regression/dataSets")
 
 ## Regression with binary outcomes
@@ -58,7 +62,6 @@ coef(summary(hyp.out))
 
 ##   One solution is to transform the coefficients to make them easier to
 ##   interpret
-
 hyp.out.tab <- coef(summary(hyp.out))
 hyp.out.tab[, "Estimate"] <- exp(coef(hyp.out))
 hyp.out.tab
@@ -93,8 +96,8 @@ cbind(predDat, predict(hyp.out, type = "response",
 ##   Instead of doing all this ourselves, we can use the effects package to
 ##   compute quantities of interest for us (cf. the Zelig package).
 
-library(effects)
-plot(allEffects(hyp.out))
+#library(effects)
+#plot(allEffects(hyp.out))
 
 ## Exercise: logistic regression
 ## ───────────────────────────────────
@@ -103,8 +106,57 @@ plot(allEffects(hyp.out))
 
 ##   1. Use glm to conduct a logistic regression to predict ever worked
 ##      (everwrk) using age (age_p) and marital status (r_maritl).
+
+
+#select only variables useful
+small <- select(NH11, everwrk, age_p, r_maritl)
+glimpse(small)
+
+#check structure of everwrk
+glimpse(small$everwrk) 
+levels(small$everwrk) 
+table(small$everwrk)
+summary(small)
+
+#impute missing values for everwrk
+set.seed(85)
+small <- complete(mice(small))
+small$everwrk <- small$everwrk
+summary(small)
+table(small$everwrk)
+
+#filter everwrk to include only 1 and 0 values, 1 = work and 0 = not work
+small <- small %>% 
+  separate(everwrk, c("everwrk", "B")) %>% 
+  select(-B)  %>% 
+  filter(everwrk %in% c("1","2")) %>% 
+  mutate(everwrk = ifelse(everwrk == 2, 0, 1))
+small$everwrk <- factor(small$everwrk)
+
+small <- small %>% 
+  separate(r_maritl, c("marital_status", "mar_desc")) %>% 
+  select(-mar_desc)
+small$marital_status <- factor(small$marital_status)
+
+#Logistic Regression
+ever_worked <- glm(everwrk ~ age_p + marital_status, family = "binomial", data = small)
+summary(ever_worked)
+
+
 ##   2. Predict the probability of working for each level of marital
 ##      status.
+table(small$marital_status)
+levels(small$marital_status)
+
+predDat2 <- with(small,
+                expand.grid(age_p = mean(age_p),
+                            marital_status = c("2", "4", "5", "6", "7", "8", "9")))
+
+cbind(predDat2, predict(ever_worked, type = "response",
+                       se.fit = TRUE, interval="confidence",
+                       newdata = predDat2))
+
+#there was a 76% probablity that someone with marital status 2 has worked 
 
 ##   Note that the data is not perfectly clean and ready to be modeled. You
 ##   will need to clean up at least some of the variables before fitting
