@@ -4,10 +4,6 @@ This repository consists of projects required for the Introduction to Data Scien
 
 Project Sections:
 
-1.) Programming in R
-2.) Data Wrangling
-3.) Exploritory Data Analysis
-4.) Probablity and Statistics
-5.) Data Story
-6.) Machine Learning
-7.) Data Visualisations 
+1.)Data Wrangling
+2.) Exploritory Data Analysis
+3.) Machine Learning
