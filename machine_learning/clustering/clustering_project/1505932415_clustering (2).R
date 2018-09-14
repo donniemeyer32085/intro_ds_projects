@@ -2,42 +2,72 @@
 # Go here for the original blog post and solutions
 # http://www.r-bloggers.com/k-means-clustering-from-r-in-action/
 
-# Exercise 0: Install these packages if you don't have them already
-
-# install.packages(c("cluster", "rattle.data","NbClust"))
+################################################# Exercise 0: Install these packages if you don't have them already
+#install.packages(c("cluster", "rattle.data","NbClust"))
+library(cluster)
+library(rattle.data)
+library(NbClust)
 
 # Now load the data and look at the first few rows
 data(wine, package="rattle.data")
 head(wine)
+str(wine)
 
-# Exercise 1: Remove the first column from the data and scale
-# it using the scale() function
+
+###################################################### Exercise 1: Remove the first column from the data and scale
+# it using the scale() function, scale function standerdizes the data, whic is vital for clustering
+df <- scale(wine[-1]) 
+head(df)
 
 
 # Now we'd like to cluster the data using K-Means. 
 # How do we decide how many clusters to use if you don't know that already?
 # We'll try two methods.
 
+
 # Method 1: A plot of the total within-groups sums of squares against the 
 # number of clusters in a K-means solution can be helpful. A bend in the 
 # graph can suggest the appropriate number of clusters. 
-
 wssplot <- function(data, nc=15, seed=1234){
 	              wss <- (nrow(data)-1)*sum(apply(data,2,var))
                	      for (i in 2:nc){
 		        set.seed(seed)
 	                wss[i] <- sum(kmeans(data, centers=i)$withinss)}
-	                
 		      plot(1:nc, wss, type="b", xlab="Number of Clusters",
 	                        ylab="Within groups sum of squares")
 	   }
-
 wssplot(df)
 
-# Exercise 2:
-#   * How many clusters does this method suggest?
-#   * Why does this method work? What's the intuition behind it?
-#   * Look at the code for wssplot() and figure out how it works
+
+#Since the variables vary in range, they are standardized prior to clustering (#1). 
+#Next, the number of clusters is determined using 
+
+
+###################################################################################################### Exercise 2:
+
+#   * How many clusters does this method suggest? 
+#     We have a distinct drop from clusters 1 to 3. A 3 cluster solution may be a good fit on the data. 
+
+
+#   * Why does this method work?  *What's the intuition behind it?
+
+
+#  * Look at the code for wssplot() and figure out how it works
+#break up function
+# number of rows in data - 1 (degrees of freedom)  * the sum of the variance of each column, 
+#this is equal to the sqaure of sums within each group, it explain part of thhe variation in 
+# the SST or the total sum of sqaures
+wss <- (nrow(df)-1)*sum(apply(df,2,var))
+wss
+#break up for loop function, for each column of data 2 thru 15, (set seed for reproducible research) , 
+wss[1] <- sum(kmeans(df, centers=1)$withinss)
+wss[2] <- sum(kmeans(df, centers=2)$withinss)
+wss[3] <- sum(kmeans(df, centers=3)$withinss)
+for (i in 2:nc){
+  set.seed(seed) 
+  wss[i] <- sum(kmeans(data, centers=i)$withinss)
+}
+#then plot the wss vector against the assigned number of clusters
 
 # Method 2: Use the NbClust library, which runs many experiments
 # and gives a distribution of potential number of clusters.
@@ -50,7 +80,7 @@ barplot(table(nc$Best.n[1,]),
 		            main="Number of Clusters Chosen by 26 Criteria")
 
 
-# Exercise 3: How many clusters does this method suggest?
+# Exercise 3: How many clusters does this method suggest? Three clusters
 
 
 # Exercise 4: Once you've picked the number of clusters, run k-means 
