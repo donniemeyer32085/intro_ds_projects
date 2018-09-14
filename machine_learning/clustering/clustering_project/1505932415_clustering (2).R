@@ -47,9 +47,13 @@ wssplot(df)
 
 #   * How many clusters does this method suggest? 
 #     We have a distinct drop from clusters 1 to 3. A 3 cluster solution may be a good fit on the data. 
-
+# Plot the within groups sums of squares vs. the number of clusters extracted. 
+# The sharp decreases from 1 to 3 clusters (with little decrease after) suggest a 3-cluster solution.
 
 #   * Why does this method work?  *What's the intuition behind it?
+#     There is not much improvment after three clusters, ie the variation within groups has been reduced
+#     so therefore the observations in each group are closely related. Going from 3 clusters to four clusters 
+#     does not reduce the ssw enogh to justify adding another cluster. 
 
 
 #  * Look at the code for wssplot() and figure out how it works
@@ -80,14 +84,20 @@ barplot(table(nc$Best.n[1,]),
 		            main="Number of Clusters Chosen by 26 Criteria")
 
 
-# Exercise 3: How many clusters does this method suggest? Three clusters
-
+# Exercise 3: How many clusters does this method suggest? 
+# Three clusters
+# Recommended number of clusters using 26 criteria provided by the NbClust package
 
 # Exercise 4: Once you've picked the number of clusters, run k-means 
 # using this number of clusters. Output the result of calling kmeans()
 # into a variable fit.km
 
-# fit.km <- kmeans( ... )
+fit.km <- kmeans(df, 3, nstart=25)
+fit.km
+
+fit.km$centers #cluster centroids 
+
+aggregate(wine[-1], by=list(cluster=fit.km$cluster), mean) #view centroid means in there original metric
 
 # Now we want to evaluate how well this clustering does.
 
@@ -95,9 +105,25 @@ barplot(table(nc$Best.n[1,]),
 # compares to the actual wine types in wine$Type. Would you consider this a good
 # clustering?
 
+table(wine$Type)
+
+ct.km <- table(wine$Type, fit.km$cluster)
+ct.km
+#The k-means clustering clustered all of wine type 1 and 3 into there repective group
+#It did well with wine type 2 as well
+library(flexclust)
+randIndex(ct.km)
+#a value of 0.89, the agreement type is strong between the two partitions
 
 # Exercise 6:
 # * Visualize these clusters using  function clusplot() from the cluster library
 # * Would you consider this a good clustering?
+#The kmeans clustering is validated once gain visualy. 
+#This strengthens the argument that the k means clsutering worked.
+library(cluster)
+par(mfrow = c(1,2))
 
-#clusplot( ... )
+plot(x, col = 'green', main = 'Original Data')
+points(y, col = 'red')
+
+clusplot(df, fit.km$cluster, main = 'Cusplot')
