@@ -4,7 +4,6 @@
 
 ################################################# Exercise 0: Install these packages if you don't have them already
 #install.packages(c("cluster", "rattle.data","NbClust"))
-library(cluster)
 library(rattle.data)
 library(NbClust)
 
@@ -67,10 +66,7 @@ wss
 wss[1] <- sum(kmeans(df, centers=1)$withinss)
 wss[2] <- sum(kmeans(df, centers=2)$withinss)
 wss[3] <- sum(kmeans(df, centers=3)$withinss)
-for (i in 2:nc){
-  set.seed(seed) 
-  wss[i] <- sum(kmeans(data, centers=i)$withinss)
-}
+
 #then plot the wss vector against the assigned number of clusters
 
 # Method 2: Use the NbClust library, which runs many experiments
@@ -119,11 +115,6 @@ randIndex(ct.km)
 # * Visualize these clusters using  function clusplot() from the cluster library
 # * Would you consider this a good clustering?
 #The kmeans clustering is validated once gain visualy. 
-#This strengthens the argument that the k means clsutering worked.
+#This strengthens the argument that the k means clustering worked
 library(cluster)
-par(mfrow = c(1,2))
-
-plot(x, col = 'green', main = 'Original Data')
-points(y, col = 'red')
-
 clusplot(df, fit.km$cluster, main = 'Cusplot')
